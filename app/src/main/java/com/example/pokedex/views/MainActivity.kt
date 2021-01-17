@@ -26,9 +26,6 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
     private var actionBar: ActionBar? = null
     private var backDisabled: Boolean = false
 
-    var listOfPokemon: List<NamedApiResource> = listOf()
-    var pokemonSpecifics: List<Pokemon> = listOf()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPokedexBinding.inflate(layoutInflater)

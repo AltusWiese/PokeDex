@@ -9,5 +9,28 @@
         android:id="@+id/fragment_pokedex_list_of_pokemon"
         android:name="com.example.pokedex.views.ListOfPokemonFragment"
         android:label="@+id/fragment_pokedex_list_of_pokemon"
-        tools:layout="@layout/fragment_pokedex_list_of_pokemon"/>
+        tools:layout="@layout/fragment_pokedex_list_of_pokemon">
+        <action
+            android:id="@+id/action_fragment_pokedex_list_of_pokemon_to_fragment_pokedex_pokemon_specifics"
+            app:destination="@id/fragment_pokedex_pokemon_specifics"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_pokedex_pokemon_specifics"
+        android:name="com.example.pokedex.views.PokemonSpecificsFragment"
+        android:label="@+id/fragment_pokedex_pokemon_specifics"
+        tools:layout="@layout/fragment_pokedex_pokemon_specifics">
+        <argument
+            android:name="pokemonId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="pokemonName"
+            app:argType="string"
+            android:defaultValue="pokemon" />
+    </fragment>
 </navigation>

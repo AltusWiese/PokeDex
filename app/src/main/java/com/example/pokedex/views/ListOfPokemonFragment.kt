@@ -8,17 +8,20 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.R
 import com.example.pokedex.databinding.FragmentPokedexListOfPokemonBinding
 import com.example.pokedex.viewmodels.PokeDexViewModel
 import com.example.pokedex.views.adapters.ListOfPokemonAdapter
 import com.example.pokedex.views.utils.ChangeActivityHeader
 import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
 import me.sargunvohra.lib.pokekotlin.model.NamedApiResourceList
+import me.sargunvohra.lib.pokekotlin.model.Pokemon
 
-class ListOfPokemonFragment : Fragment() {
+class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
 
     private val mViewModel: PokeDexViewModel by activityViewModels()
     private lateinit var callback: ChangeActivityHeader
@@ -55,7 +58,12 @@ class ListOfPokemonFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         callback.setToolbar("List of Pokemon")
-        getListOfPokemon()
+        callback.disableBack()
+        if (mViewModel.listOfPokemon.isNotEmpty()) {
+            setupAdapter(mViewModel.listOfPokemon)
+        } else {
+            getListOfPokemon()
+        }
     }
 
     private fun getListOfPokemon() {
@@ -63,9 +71,8 @@ class ListOfPokemonFragment : Fragment() {
         mViewModel.getListOfPokemon()
             .observe(viewLifecycleOwner, { listOfPokemon: NamedApiResourceList ->
                 if (listOfPokemon != null) {
-                    val list = listOfPokemon.results
-                    (activity as MainActivity).listOfPokemon = list
-                    setupAdapter(list)
+                    mViewModel.listOfPokemon = listOfPokemon.results
+                    setupAdapter(listOfPokemon.results)
                     callback.stopAnimation()
                 } else {
                     Toast.makeText(requireContext(), "Service call failed. Please try again.", Toast.LENGTH_LONG).show()
@@ -76,11 +83,16 @@ class ListOfPokemonFragment : Fragment() {
 
     private fun setupAdapter(list: List<NamedApiResource>) {
         val manager = LinearLayoutManager(context)
-        listOfPokemonAdapter = ListOfPokemonAdapter(list)
+        listOfPokemonAdapter = ListOfPokemonAdapter(this, list)
         val list: RecyclerView = binding.pokedexListOfPokemonRecyclerview
         list.layoutManager = manager
         list.setHasFixedSize(true)
         list.itemAnimator = DefaultItemAnimator()
         list.adapter = listOfPokemonAdapter
+    }
+
+    override fun fetchSpecificPokemon(name: String, id: Int) {
+        val action = ListOfPokemonFragmentDirections.actionFragmentPokedexListOfPokemonToFragmentPokedexPokemonSpecifics(id, name)
+        findNavController().navigate(action)
     }
 }

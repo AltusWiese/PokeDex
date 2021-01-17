@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.R
+import com.example.pokedex.views.ListOfPokemonToPokemonSpecificsI
 import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
 
-class ListOfPokemonAdapter(var listOfPokemon: List<NamedApiResource>) : RecyclerView.Adapter<ListOfPokemonAdapter.MyViewHolder>() {
+class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecificsI, var listOfPokemon: List<NamedApiResource>) : RecyclerView.Adapter<ListOfPokemonAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -19,6 +20,9 @@ class ListOfPokemonAdapter(var listOfPokemon: List<NamedApiResource>) : Recycler
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val pokemon = listOfPokemon[position]
         holder.pokemonName.text = pokemon.name
+        holder.itemView.setOnClickListener {
+            callbackIdOfPokemon.fetchSpecificPokemon(pokemon.name, pokemon.id)
+        }
     }
 
     override fun getItemCount(): Int {
