@@ -10,10 +10,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.FragmentPokedexPokemonSpecificsBinding
 import com.example.pokedex.viewmodels.PokeDexViewModel
+import com.example.pokedex.views.adapters.PokemonAbilitiesAdapter
+import com.example.pokedex.views.adapters.PokemonMovesAdapter
 import com.example.pokedex.views.utils.ChangeActivityHeader
 import me.sargunvohra.lib.pokekotlin.model.Pokemon
+import me.sargunvohra.lib.pokekotlin.model.PokemonAbility
+import me.sargunvohra.lib.pokekotlin.model.PokemonMove
 
 
 class PokemonSpecificsFragment : Fragment() {
@@ -21,6 +28,8 @@ class PokemonSpecificsFragment : Fragment() {
     private val mViewModel: PokeDexViewModel by activityViewModels()
     val args: PokemonSpecificsFragmentArgs by navArgs()
     private lateinit var callback: ChangeActivityHeader
+    private lateinit var pokemonAbilitiesAdapter: PokemonAbilitiesAdapter
+    private lateinit var pokemonMovesAdapter: PokemonMovesAdapter
 
     private var _binding: FragmentPokedexPokemonSpecificsBinding? = null
     private val binding get() = _binding!!
@@ -62,6 +71,8 @@ class PokemonSpecificsFragment : Fragment() {
         for (pokemon in mViewModel.listOfPokemonSpecifics) {
             if (pokemon.id == pokemonId) {
                 displayPokemonData(pokemon)
+                setupAbilitiesAdapter(pokemon.abilities)
+                setupMovesAdapter(pokemon.moves)
                 isPokemonCached = true
                 break
             }
@@ -75,9 +86,31 @@ class PokemonSpecificsFragment : Fragment() {
                     if (pokemonData != null) {
                         mViewModel.listOfPokemonSpecifics.add(pokemonData)
                         displayPokemonData(pokemonData)
+                        setupAbilitiesAdapter(pokemonData.abilities)
+                        setupMovesAdapter(pokemonData.moves)
                     }
                 })
         }
+    }
+
+    private fun setupAbilitiesAdapter(listOfAbilities: List<PokemonAbility>) {
+        val manager = LinearLayoutManager(context)
+        pokemonAbilitiesAdapter = PokemonAbilitiesAdapter(listOfAbilities)
+        val recycler: RecyclerView = binding.pokemonAbilitiesRecyclerview
+        recycler.layoutManager = manager
+        recycler.setHasFixedSize(true)
+        recycler.itemAnimator = DefaultItemAnimator()
+        recycler.adapter = pokemonAbilitiesAdapter
+    }
+
+    private fun setupMovesAdapter(listOfMoves: List<PokemonMove>) {
+        val manager = LinearLayoutManager(context)
+        pokemonMovesAdapter = PokemonMovesAdapter(listOfMoves)
+        val recycler: RecyclerView = binding.pokemonMovesRecyclerview
+        recycler.layoutManager = manager
+        recycler.setHasFixedSize(true)
+        recycler.itemAnimator = DefaultItemAnimator()
+        recycler.adapter = pokemonMovesAdapter
     }
 
     private fun displayPokemonData(pokemonData: Pokemon) {

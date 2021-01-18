@@ -12,14 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pokedex.R
 import com.example.pokedex.databinding.FragmentPokedexListOfPokemonBinding
 import com.example.pokedex.viewmodels.PokeDexViewModel
 import com.example.pokedex.views.adapters.ListOfPokemonAdapter
 import com.example.pokedex.views.utils.ChangeActivityHeader
 import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
 import me.sargunvohra.lib.pokekotlin.model.NamedApiResourceList
-import me.sargunvohra.lib.pokekotlin.model.Pokemon
 
 class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
 
@@ -81,14 +79,14 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
             })
     }
 
-    private fun setupAdapter(list: List<NamedApiResource>) {
+    private fun setupAdapter(listOfPokemon: List<NamedApiResource>) {
         val manager = LinearLayoutManager(context)
-        listOfPokemonAdapter = ListOfPokemonAdapter(this, list)
-        val list: RecyclerView = binding.pokedexListOfPokemonRecyclerview
-        list.layoutManager = manager
-        list.setHasFixedSize(true)
-        list.itemAnimator = DefaultItemAnimator()
-        list.adapter = listOfPokemonAdapter
+        listOfPokemonAdapter = ListOfPokemonAdapter(this, listOfPokemon)
+        val recycler: RecyclerView = binding.pokedexListOfPokemonRecyclerview
+        recycler.layoutManager = manager
+        recycler.setHasFixedSize(true)
+        recycler.itemAnimator = DefaultItemAnimator()
+        recycler.adapter = listOfPokemonAdapter
     }
 
     override fun fetchSpecificPokemon(name: String, id: Int) {
