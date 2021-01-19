@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.R
+import com.example.pokedex.model.models.FormattedPokemonModel
 import com.example.pokedex.views.ListOfPokemonToPokemonSpecificsI
-import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
 
-class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecificsI, var listOfPokemon: List<NamedApiResource>) : RecyclerView.Adapter<ListOfPokemonAdapter.MyViewHolder>() {
+class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecificsI, var listOfPokemon: List<FormattedPokemonModel>) : RecyclerView.Adapter<ListOfPokemonAdapter.MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

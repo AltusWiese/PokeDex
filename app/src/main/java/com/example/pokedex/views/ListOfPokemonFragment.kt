@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.FragmentPokedexListOfPokemonBinding
+import com.example.pokedex.model.models.FormattedPokemonModel
+import com.example.pokedex.model.models.NamedApiResourceList
 import com.example.pokedex.viewmodels.PokeDexViewModel
 import com.example.pokedex.views.adapters.ListOfPokemonAdapter
 import com.example.pokedex.views.utils.ChangeActivityHeader
-import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
-import me.sargunvohra.lib.pokekotlin.model.NamedApiResourceList
 
 class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
 
@@ -69,8 +69,7 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
         mViewModel.getListOfPokemon()
             .observe(viewLifecycleOwner, { listOfPokemon: NamedApiResourceList ->
                 if (listOfPokemon != null) {
-                    mViewModel.listOfPokemon = listOfPokemon.results
-                    setupAdapter(listOfPokemon.results)
+                    setupAdapter(mViewModel.formatList(listOfPokemon))
                     callback.stopAnimation()
                 } else {
                     Toast.makeText(requireContext(), "Service call failed. Please try again.", Toast.LENGTH_LONG).show()
@@ -79,7 +78,7 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
             })
     }
 
-    private fun setupAdapter(listOfPokemon: List<NamedApiResource>) {
+    private fun setupAdapter(listOfPokemon: List<FormattedPokemonModel>) {
         val manager = LinearLayoutManager(context)
         listOfPokemonAdapter = ListOfPokemonAdapter(this, listOfPokemon)
         val recycler: RecyclerView = binding.pokedexListOfPokemonRecyclerview

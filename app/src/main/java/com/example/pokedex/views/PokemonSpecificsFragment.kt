@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.FragmentPokedexPokemonSpecificsBinding
+import com.example.pokedex.model.models.Pokemon
 import com.example.pokedex.viewmodels.PokeDexViewModel
 import com.example.pokedex.views.adapters.PokemonAbilitiesAdapter
 import com.example.pokedex.views.adapters.PokemonMovesAdapter
 import com.example.pokedex.views.utils.ChangeActivityHeader
-import me.sargunvohra.lib.pokekotlin.model.Pokemon
 import me.sargunvohra.lib.pokekotlin.model.PokemonAbility
 import me.sargunvohra.lib.pokekotlin.model.PokemonMove
 

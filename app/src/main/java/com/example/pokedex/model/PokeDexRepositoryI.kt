@@ -1,9 +1,9 @@
-package com.example.pokedex.models
+package com.example.pokedex.model
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import me.sargunvohra.lib.pokekotlin.model.NamedApiResourceList
-import me.sargunvohra.lib.pokekotlin.model.Pokemon
+import com.example.pokedex.model.models.NamedApiResourceList
+import com.example.pokedex.model.models.Pokemon
+
 
 interface PokeDexRepositoryI {
 
