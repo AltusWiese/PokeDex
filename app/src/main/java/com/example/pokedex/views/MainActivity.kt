@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
     private lateinit var lottieAnimationView: LottieAnimationView
     private lateinit var animationView: AnimationView
     private var actionBar: ActionBar? = null
-    private var backDisabled: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,14 +62,6 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
         return true
     }
 
-    override fun onBackPressed() {
-        if (!backDisabled) {
-            super.onBackPressed()
-        } else {
-
-        }
-    }
-
     override fun setToolbar(string: String?) {
         if (actionBar != null) {
             binding.toolbarTextView.text = string
@@ -78,13 +69,11 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
     }
 
     override fun enableBack() {
-        backDisabled = false
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     override fun disableBack() {
-        backDisabled = true
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(false)
     }
@@ -98,16 +87,5 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
     override fun stopAnimation() {
         stopBackgroundAnimation(animationView, lottieAnimationView)
         binding.fadeBackground.visibility = View.GONE
-    }
-
-    override fun blockUserInteraction() {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        );
-    }
-
-    override fun allowUserInteraction() {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 }

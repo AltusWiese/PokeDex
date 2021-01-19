@@ -34,7 +34,7 @@ class PokeDexViewModel : ViewModel() {
         return receivedData
     }
 
-    fun formatList(listOfPokemon: NamedApiResourceList): List<FormattedPokemonModel> {
+    fun formatList(listOfPokemon: NamedApiResourceList): ArrayList<FormattedPokemonModel> {
         val formattedListOfPokemon = arrayListOf<FormattedPokemonModel>()
         var isFirst = true
         for (result in listOfPokemon.results) {

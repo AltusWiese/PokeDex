@@ -78,7 +78,7 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
             })
     }
 
-    private fun setupAdapter(listOfPokemon: List<FormattedPokemonModel>) {
+    private fun setupAdapter(listOfPokemon: ArrayList<FormattedPokemonModel>) {
         val manager = LinearLayoutManager(context)
         listOfPokemonAdapter = ListOfPokemonAdapter(this, listOfPokemon)
         val recycler: RecyclerView = binding.pokedexListOfPokemonRecyclerview

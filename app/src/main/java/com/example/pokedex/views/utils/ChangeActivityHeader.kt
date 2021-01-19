@@ -11,8 +11,4 @@ interface ChangeActivityHeader {
     fun startAnimation()
 
     fun stopAnimation()
-
-    fun blockUserInteraction()
-
-    fun allowUserInteraction()
 }
