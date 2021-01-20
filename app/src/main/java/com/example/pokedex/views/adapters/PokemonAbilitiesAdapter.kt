@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.R
 import me.sargunvohra.lib.pokekotlin.model.PokemonAbility
 
-class PokemonAbilitiesAdapter(var listOfAbilities: List<PokemonAbility>) : RecyclerView.Adapter<PokemonAbilitiesAdapter.MyViewHolder>() {
+class PokemonAbilitiesAdapter(var listOfAbilities: List<PokemonAbility>) :
+        RecyclerView.Adapter<PokemonAbilitiesAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.pokemon_abilities_moves_card, parent, false)

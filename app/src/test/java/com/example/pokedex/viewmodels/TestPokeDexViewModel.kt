@@ -31,10 +31,11 @@ class TestPokeDexViewModel {
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
 
-    private lateinit var viewModel: PokeDexViewModel
     val receivedData = MutableLiveData<NamedApiResourceList>()
-    lateinit var result: NamedApiResource
     var formattedPokemonList: ArrayList<FormattedPokemonModel> = arrayListOf()
+
+    lateinit var viewModel: PokeDexViewModel
+    lateinit var result: NamedApiResource
     lateinit var results: ArrayList<NamedApiResource>
     lateinit var apiList: NamedApiResourceList
 
@@ -64,5 +65,10 @@ class TestPokeDexViewModel {
     fun isIdSuccessfullyExtractedFromUrl() {
        assertEquals(viewModel.formatList(apiList), formattedPokemonList)
     }
+
+//    @Test
+//    fun isPokemonSpecificsRetrieved() {
+//        `when`(pokeDexRepositoryI.retrievePokemonSpecifics())
+//    }
 
 }

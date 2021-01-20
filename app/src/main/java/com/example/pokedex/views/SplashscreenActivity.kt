@@ -17,10 +17,6 @@ class SplashscreenActivity : AppCompatActivity() {
         delayLoading()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     private fun delayLoading() {
 
          welcomeThread = object : Thread() {

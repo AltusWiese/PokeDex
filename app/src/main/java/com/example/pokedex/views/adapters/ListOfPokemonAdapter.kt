@@ -9,8 +9,9 @@ import com.example.pokedex.R
 import com.example.pokedex.model.models.FormattedPokemonModel
 import com.example.pokedex.views.ListOfPokemonToPokemonSpecificsI
 
-class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecificsI, var listOfPokemon: List<FormattedPokemonModel>) : RecyclerView.Adapter<ListOfPokemonAdapter.MyViewHolder>() {
-
+class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecificsI,
+                           var listOfPokemon: List<FormattedPokemonModel>) :
+        RecyclerView.Adapter<ListOfPokemonAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val v: View = LayoutInflater.from(parent.context).inflate(R.layout.list_of_pokemon_card, parent, false)
@@ -26,7 +27,7 @@ class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecif
     }
 
     override fun getItemCount(): Int {
-       return listOfPokemon.size
+        return listOfPokemon.size
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

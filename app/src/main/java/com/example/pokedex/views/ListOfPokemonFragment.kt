@@ -1,17 +1,22 @@
 package com.example.pokedex.views
 
 import android.content.Context
+import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.R
 import com.example.pokedex.databinding.FragmentPokedexListOfPokemonBinding
 import com.example.pokedex.model.models.FormattedPokemonModel
 import com.example.pokedex.model.models.NamedApiResourceList
@@ -39,10 +44,10 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentPokedexListOfPokemonBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -67,15 +72,15 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
     private fun getListOfPokemon() {
         callback.startAnimation()
         mViewModel.getListOfPokemon()
-            .observe(viewLifecycleOwner, { listOfPokemon: NamedApiResourceList ->
-                if (listOfPokemon != null) {
-                    setupAdapter(mViewModel.formatList(listOfPokemon))
-                    callback.stopAnimation()
-                } else {
-                    Toast.makeText(requireContext(), "Service call failed. Please try again.", Toast.LENGTH_LONG).show()
-                    callback.stopAnimation()
-                }
-            })
+                .observe(viewLifecycleOwner, { listOfPokemon: NamedApiResourceList ->
+                    if (listOfPokemon.results.isNotEmpty()) {
+                        setupAdapter(mViewModel.formatList(listOfPokemon))
+                        callback.stopAnimation()
+                    } else {
+                        displayErrorDialog()
+                        callback.stopAnimation()
+                    }
+                })
     }
 
     private fun setupAdapter(listOfPokemon: ArrayList<FormattedPokemonModel>) {
@@ -86,6 +91,19 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
         recycler.setHasFixedSize(true)
         recycler.itemAnimator = DefaultItemAnimator()
         recycler.adapter = listOfPokemonAdapter
+    }
+
+    private fun displayErrorDialog() {
+        val builder = AlertDialog.Builder(requireContext(), R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+        builder.setCancelable(false)
+        builder.setTitle(Html.fromHtml("<font color='#000000'>Oops!</font>"))
+        builder.setMessage("Something went wrong.\nPlease try again.")
+        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> getListOfPokemon() }
+        val alert = builder.create()
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
+        val pbutton = alert.getButton(DialogInterface.BUTTON_POSITIVE)
+        pbutton.setTextColor(Color.parseColor("#0097c9"))
     }
 
     override fun fetchSpecificPokemon(name: String, id: Int) {

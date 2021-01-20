@@ -1,18 +1,25 @@
 package com.example.pokedex.views
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pokedex.R
 import com.example.pokedex.databinding.FragmentPokedexPokemonSpecificsBinding
 import com.example.pokedex.model.models.Pokemon
 import com.example.pokedex.viewmodels.PokeDexViewModel
@@ -45,9 +52,9 @@ class PokemonSpecificsFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPokedexPokemonSpecificsBinding.inflate(inflater, container, false)
         return binding.root
@@ -80,17 +87,33 @@ class PokemonSpecificsFragment : Fragment() {
         if (!isPokemonCached) {
             callback.startAnimation()
             mViewModel.getPokemonSpecifics(pokemonId).observe(
-                viewLifecycleOwner,
-                { pokemonData: Pokemon ->
-                    callback.stopAnimation()
-                    if (pokemonData != null) {
-                        mViewModel.listOfPokemonSpecifics.add(pokemonData)
-                        displayPokemonData(pokemonData)
-                        setupAbilitiesAdapter(pokemonData.abilities)
-                        setupMovesAdapter(pokemonData.moves)
-                    }
-                })
+                    viewLifecycleOwner,
+                    { pokemonData: Pokemon ->
+                        callback.stopAnimation()
+                        if (pokemonData.id != -1) {
+                            mViewModel.listOfPokemonSpecifics.add(pokemonData)
+                            displayPokemonData(pokemonData)
+                            setupAbilitiesAdapter(pokemonData.abilities)
+                            setupMovesAdapter(pokemonData.moves)
+                        } else {
+                            displayErrorDialog(pokemonId)
+                            callback.stopAnimation()
+                        }
+                    })
         }
+    }
+
+    private fun displayErrorDialog(pokemonId: Int) {
+        val builder = AlertDialog.Builder(requireContext(), R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+        builder.setCancelable(false)
+        builder.setTitle(Html.fromHtml("<font color='#000000'>Oops!</font>"))
+        builder.setMessage("Something went wrong.\nPlease try again.")
+        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> getPokemonSpecifics(pokemonId) }
+        val alert = builder.create()
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
+        val pbutton = alert.getButton(DialogInterface.BUTTON_POSITIVE)
+        pbutton.setTextColor(Color.parseColor("#0097c9"))
     }
 
     private fun setupAbilitiesAdapter(listOfAbilities: List<PokemonAbility>) {

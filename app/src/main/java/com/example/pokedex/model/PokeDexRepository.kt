@@ -29,7 +29,7 @@ class PokeDexRepository: PokeDexRepositoryI {
                 }
 
                 override fun onFailure(call: Call<NamedApiResourceList>, t: Throwable) {
-                    results.postValue(null)
+                    results.postValue(NamedApiResourceList(0,"","", emptyList()))
                 }
 
             })
@@ -45,7 +45,7 @@ class PokeDexRepository: PokeDexRepositoryI {
                }
 
                override fun onFailure(call: Call<Pokemon>, t: Throwable) {
-                   results.postValue(null)
+                   results.postValue(Pokemon(-1,"",-1,-1,-1, emptyList(), emptyList()))
                }
 
            })
