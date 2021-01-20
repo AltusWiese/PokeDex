@@ -2,7 +2,6 @@ package com.example.pokedex.views
 
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -10,16 +9,18 @@ import androidx.navigation.fragment.NavHostFragment
 import com.airbnb.lottie.LottieAnimationView
 import com.example.pokedex.R
 import com.example.pokedex.databinding.ActivityPokedexBinding
-import com.example.pokedex.viewmodels.PokeDexViewModel
+import com.example.pokedex.model.PokeDexRepository
+import com.example.pokedex.model.PokeDexRepositoryI
+import com.example.pokedex.viewmodels.PokeDexListOfPokemonViewModel
+import com.example.pokedex.viewmodels.PokeDexPokemonSpecificsViewModel
 import com.example.pokedex.views.utils.AnimationView
 import com.example.pokedex.views.utils.BackgroundLottieAnimation
 import com.example.pokedex.views.utils.ChangeActivityHeader
-import me.sargunvohra.lib.pokekotlin.model.NamedApiResource
-import me.sargunvohra.lib.pokekotlin.model.Pokemon
 
 class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottieAnimation {
 
-    private lateinit var mViewModel: PokeDexViewModel
+    private lateinit var mListOfPokemonViewModel: PokeDexListOfPokemonViewModel
+    private lateinit var mSpecificPokemonViewModel: PokeDexPokemonSpecificsViewModel
     private lateinit var binding: ActivityPokedexBinding
     private lateinit var lottieAnimationView: LottieAnimationView
     private lateinit var animationView: AnimationView
@@ -48,7 +49,11 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
     }
 
     private fun setupViewModel() {
-        mViewModel = ViewModelProvider(this).get(PokeDexViewModel::class.java)
+        val pokeDexRepository: PokeDexRepositoryI = PokeDexRepository()
+        mListOfPokemonViewModel = ViewModelProvider(this).get(PokeDexListOfPokemonViewModel::class.java)
+        mSpecificPokemonViewModel = ViewModelProvider(this).get(PokeDexPokemonSpecificsViewModel::class.java)
+        mListOfPokemonViewModel.allocateRepo(pokeDexRepository)
+        mSpecificPokemonViewModel.allocateRepo(pokeDexRepository)
     }
 
     private fun setupNavigation() {

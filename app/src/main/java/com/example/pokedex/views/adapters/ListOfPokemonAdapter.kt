@@ -7,9 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.R
 import com.example.pokedex.model.models.FormattedPokemonModel
-import com.example.pokedex.views.ListOfPokemonToPokemonSpecificsI
+import com.example.pokedex.views.interfaces.ListOfPokemonToPokemonSpecificsInt
 
-class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecificsI,
+class ListOfPokemonAdapter(var callbackIdOfPokemon: ListOfPokemonToPokemonSpecificsInt,
                            var listOfPokemon: List<FormattedPokemonModel>) :
         RecyclerView.Adapter<ListOfPokemonAdapter.MyViewHolder>() {
 

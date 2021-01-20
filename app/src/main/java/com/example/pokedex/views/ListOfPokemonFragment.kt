@@ -8,7 +8,6 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,14 +18,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.R
 import com.example.pokedex.databinding.FragmentPokedexListOfPokemonBinding
 import com.example.pokedex.model.models.FormattedPokemonModel
-import com.example.pokedex.model.models.NamedApiResourceList
-import com.example.pokedex.viewmodels.PokeDexViewModel
+import com.example.pokedex.viewmodels.PokeDexListOfPokemonViewModel
 import com.example.pokedex.views.adapters.ListOfPokemonAdapter
+import com.example.pokedex.views.interfaces.ListOfPokemonFragmentViewModelInt
+import com.example.pokedex.views.interfaces.ListOfPokemonToPokemonSpecificsInt
 import com.example.pokedex.views.utils.ChangeActivityHeader
 
-class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
+class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsInt, ListOfPokemonFragmentViewModelInt {
 
-    private val mViewModel: PokeDexViewModel by activityViewModels()
+    private val mListOfPokemonViewModel: PokeDexListOfPokemonViewModel by activityViewModels()
     private lateinit var callback: ChangeActivityHeader
     private lateinit var listOfPokemonAdapter: ListOfPokemonAdapter
 
@@ -62,25 +62,11 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
 
         callback.setToolbar("List of Pokemon")
         callback.disableBack()
-        if (mViewModel.listOfPokemon.isNotEmpty()) {
-            setupAdapter(mViewModel.listOfPokemon)
-        } else {
-            getListOfPokemon()
-        }
+        notifyViewModelViewIsReady()
     }
 
-    private fun getListOfPokemon() {
-        callback.startAnimation()
-        mViewModel.getListOfPokemon()
-                .observe(viewLifecycleOwner, { listOfPokemon: NamedApiResourceList ->
-                    if (listOfPokemon.results.isNotEmpty()) {
-                        setupAdapter(mViewModel.formatList(listOfPokemon))
-                        callback.stopAnimation()
-                    } else {
-                        displayErrorDialog()
-                        callback.stopAnimation()
-                    }
-                })
+    private fun notifyViewModelViewIsReady() {
+        mListOfPokemonViewModel.viewIsReady(this)
     }
 
     private fun setupAdapter(listOfPokemon: ArrayList<FormattedPokemonModel>) {
@@ -98,7 +84,7 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
         builder.setCancelable(false)
         builder.setTitle(Html.fromHtml("<font color='#000000'>Oops!</font>"))
         builder.setMessage("Something went wrong.\nPlease try again.")
-        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> getListOfPokemon() }
+        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> notifyViewModelViewIsReady() }
         val alert = builder.create()
         alert.setCanceledOnTouchOutside(false)
         alert.show()
@@ -109,5 +95,23 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsI {
     override fun fetchSpecificPokemon(name: String, id: Int) {
         val action = ListOfPokemonFragmentDirections.actionFragmentPokedexListOfPokemonToFragmentPokedexPokemonSpecifics(id, name)
         findNavController().navigate(action)
+    }
+
+    override fun startProgressLoader() {
+        callback.startAnimation()
+    }
+
+    override fun stopProgressLoader() {
+        callback.stopAnimation()
+    }
+
+    override fun listOfPokemonIsAvailable(listOfPokemon: ArrayList<FormattedPokemonModel>) {
+        callback.stopAnimation()
+        setupAdapter(listOfPokemon)
+    }
+
+    override fun listOfPokemonIsNotAvailable() {
+        callback.stopAnimation()
+        displayErrorDialog()
     }
 }

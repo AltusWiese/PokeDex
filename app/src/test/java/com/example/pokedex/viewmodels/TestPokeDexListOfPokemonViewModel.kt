@@ -16,14 +16,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner.Silent::class)
-class TestPokeDexViewModel {
+class TestPokeDexListOfPokemonViewModel {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -34,7 +33,7 @@ class TestPokeDexViewModel {
     val receivedData = MutableLiveData<NamedApiResourceList>()
     var formattedPokemonList: ArrayList<FormattedPokemonModel> = arrayListOf()
 
-    lateinit var viewModel: PokeDexViewModel
+    lateinit var listOfPokemonViewModel: PokeDexListOfPokemonViewModel
     lateinit var result: NamedApiResource
     lateinit var results: ArrayList<NamedApiResource>
     lateinit var apiList: NamedApiResourceList
@@ -46,24 +45,24 @@ class TestPokeDexViewModel {
     @Throws(Exception::class)
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        viewModel = PokeDexViewModel()
+        listOfPokemonViewModel = PokeDexListOfPokemonViewModel()
         result = NamedApiResource("bulbasaur", "https://pokeapi.co/api/v2/pokemon/249/")
         results = arrayListOf(result)
         apiList = NamedApiResourceList(248, "null", "null", results)
         formattedPokemonList.add(FormattedPokemonModel("bulbasaur", 249))
     }
 
-    @Test
-    fun isPokemonListDataRetrieved() = testCoroutineRule.runBlockingTest {
-        `when`(pokeDexRepositoryI.retrieveListOfPokemon(receivedData))
-            .thenReturn(isIdSuccessfullyExtractedFromUrl())
-        assertNotNull(viewModel.listOfPokemon)
-        assertEquals(viewModel.listOfPokemon, formattedPokemonList)
-    }
+//    @Test
+//    fun isPokemonListDataRetrieved() = testCoroutineRule.runBlockingTest {
+//        `when`(pokeDexRepositoryI.retrieveListOfPokemon(receivedData))
+//            .thenReturn(isIdSuccessfullyExtractedFromUrl())
+//        assertNotNull(listOfPokemonViewModel.listOfPokemon)
+//        assertEquals(listOfPokemonViewModel.listOfPokemon, formattedPokemonList)
+//    }
 
     @Test
     fun isIdSuccessfullyExtractedFromUrl() {
-       assertEquals(viewModel.formatList(apiList), formattedPokemonList)
+       assertEquals(listOfPokemonViewModel.formatList(apiList), formattedPokemonList)
     }
 
 //    @Test
