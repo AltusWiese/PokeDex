@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 
 class PokeDexListOfPokemonViewModel : ViewModel() {
 
-    private lateinit var pokeDexRepository: PokeDexRepositoryI
+    lateinit var pokeDexRepository: PokeDexRepositoryI
     var listOfPokemon: ArrayList<FormattedPokemonModel> = arrayListOf()
     lateinit var fragmentInterface: ListOfPokemonFragmentViewModelInt
 
@@ -30,7 +30,7 @@ class PokeDexListOfPokemonViewModel : ViewModel() {
         }
     }
 
-    private fun listOfPokemonServiceCall() {
+    fun listOfPokemonServiceCall() {
         fragmentInterface.startProgressLoader()
         viewModelScope.launch(Dispatchers.IO) {
             pokeDexRepository.retrieveListOfPokemon(object : PokemonCallback<NamedApiResourceList> {
