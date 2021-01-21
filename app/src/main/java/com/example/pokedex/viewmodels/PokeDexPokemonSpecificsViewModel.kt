@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class PokeDexPokemonSpecificsViewModel : ViewModel() {
 
-    private lateinit var pokeDexRepository: PokeDexRepositoryI
+    lateinit var pokeDexRepository: PokeDexRepositoryI
     lateinit var fragmentInterface: SpecificPokemonFragmentViewModelInt
     var listOfPokemonSpecifics: ArrayList<Pokemon> = arrayListOf()
 
@@ -36,7 +36,7 @@ class PokeDexPokemonSpecificsViewModel : ViewModel() {
         }
     }
 
-    private fun pokemonSpecificsServiceCall(id: Int) {
+    fun pokemonSpecificsServiceCall(id: Int) {
         fragmentInterface.startProgressLoader()
         viewModelScope.launch(Dispatchers.IO) {
             pokeDexRepository.retrievePokemonSpecifics(id, object : PokeDexRepositoryI.PokemonCallback<Pokemon> {
