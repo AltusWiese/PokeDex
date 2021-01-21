@@ -38,7 +38,7 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
     private lateinit var pokemonMovesAdapter: PokemonMovesAdapter
 
     private var _binding: FragmentPokedexPokemonSpecificsBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -54,9 +54,9 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentPokedexPokemonSpecificsBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onDestroyView() {
@@ -92,39 +92,41 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
     private fun setupAbilitiesAdapter(listOfAbilities: List<PokemonAbility>) {
         val manager = LinearLayoutManager(context)
         pokemonAbilitiesAdapter = PokemonAbilitiesAdapter(listOfAbilities)
-        val recycler: RecyclerView = binding.pokemonAbilitiesRecyclerview
-        recycler.layoutManager = manager
-        recycler.setHasFixedSize(true)
-        recycler.itemAnimator = DefaultItemAnimator()
-        recycler.adapter = pokemonAbilitiesAdapter
+        val recycler: RecyclerView? = binding?.pokemonAbilitiesRecyclerview
+        recycler?.layoutManager = manager
+        recycler?.setHasFixedSize(true)
+        recycler?.itemAnimator = DefaultItemAnimator()
+        recycler?.adapter = pokemonAbilitiesAdapter
     }
 
     private fun setupMovesAdapter(listOfMoves: List<PokemonMove>) {
         val manager = LinearLayoutManager(context)
         pokemonMovesAdapter = PokemonMovesAdapter(listOfMoves)
-        val recycler: RecyclerView = binding.pokemonMovesRecyclerview
-        recycler.layoutManager = manager
-        recycler.setHasFixedSize(true)
-        recycler.itemAnimator = DefaultItemAnimator()
-        recycler.adapter = pokemonMovesAdapter
+        val recycler: RecyclerView? = binding?.pokemonMovesRecyclerview
+        recycler?.layoutManager = manager
+        recycler?.setHasFixedSize(true)
+        recycler?.itemAnimator = DefaultItemAnimator()
+        recycler?.adapter = pokemonMovesAdapter
     }
 
     private fun displayPokemonData(pokemonData: Pokemon) {
-        setImageResource(pokemonData.id)
-        val pokemonHeight = pokemonData.height.toString() + " \'"
-        val pokemonWeight = pokemonData.weight.toString() + " lbs"
-        binding.pokemonName.text = pokemonData.name
-        binding.pokemonExperience.text = pokemonData.baseExperience.toString()
-        binding.pokemonHeight.text = pokemonHeight
-        binding.pokemonWeight.text = pokemonWeight
+        if (isAdded) {
+            setImageResource(pokemonData.id)
+            val pokemonHeight = pokemonData.height.toString() + " \'"
+            val pokemonWeight = pokemonData.weight.toString() + " lbs"
+            binding?.pokemonName?.text = pokemonData.name
+            binding?.pokemonExperience?.text = pokemonData.baseExperience.toString()
+            binding?.pokemonHeight?.text = pokemonHeight
+            binding?.pokemonWeight?.text = pokemonWeight
+        }
     }
 
     private fun setImageResource(pokemonId: Int) {
-        val res: Resources = resources
-        val mDrawableName = "id$pokemonId"
-        val resID: Int = res.getIdentifier(mDrawableName, "drawable", requireActivity().packageName)
-        val drawable: Drawable = res.getDrawable(resID)
-        binding.pokemonImage.setImageDrawable(drawable)
+            val res: Resources = resources
+            val mDrawableName = "id$pokemonId"
+            val resID: Int = res.getIdentifier(mDrawableName, "drawable", requireActivity().packageName)
+            val drawable: Drawable = res.getDrawable(resID)
+            binding?.pokemonImage?.setImageDrawable(drawable)
     }
 
     override fun startProgressLoader() {

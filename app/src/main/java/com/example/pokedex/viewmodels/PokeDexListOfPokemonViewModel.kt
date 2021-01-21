@@ -6,8 +6,7 @@ import com.example.pokedex.model.PokeDexRepositoryI.PokemonCallback
 import com.example.pokedex.model.models.FormattedPokemonModel
 import com.example.pokedex.model.models.NamedApiResourceList
 import com.example.pokedex.views.interfaces.ListOfPokemonFragmentViewModelInt
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -25,7 +24,6 @@ class PokeDexListOfPokemonViewModel : ViewModel() {
 
         fragmentInterface = fragmentInt
         if (listOfPokemon.isEmpty()) {
-            fragmentInterface.startProgressLoader()
             listOfPokemonServiceCall()
         } else {
             fragmentInterface.listOfPokemonIsAvailable(listOfPokemon)
@@ -33,16 +31,17 @@ class PokeDexListOfPokemonViewModel : ViewModel() {
     }
 
     private fun listOfPokemonServiceCall() {
+        fragmentInterface.startProgressLoader()
         viewModelScope.launch(Dispatchers.IO) {
             pokeDexRepository.retrieveListOfPokemon(object : PokemonCallback<NamedApiResourceList> {
                 override fun onSuccess(result: NamedApiResourceList) {
-                    fragmentInterface.stopProgressLoader()
-                    fragmentInterface.listOfPokemonIsAvailable(formatList(result))
+                        fragmentInterface.stopProgressLoader()
+                        fragmentInterface.listOfPokemonIsAvailable(formatList(result))
                 }
 
                 override fun onFailure() {
-                    fragmentInterface.stopProgressLoader()
-                    fragmentInterface.listOfPokemonIsNotAvailable()
+                        fragmentInterface.stopProgressLoader()
+                        fragmentInterface.listOfPokemonIsNotAvailable()
                 }
             })
         }

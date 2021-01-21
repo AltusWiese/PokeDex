@@ -7,6 +7,8 @@ import com.example.pokedex.model.PokeDexRepositoryI
 import com.example.pokedex.model.models.Pokemon
 import com.example.pokedex.views.interfaces.SpecificPokemonFragmentViewModelInt
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class PokeDexPokemonSpecificsViewModel : ViewModel() {
@@ -34,23 +36,21 @@ class PokeDexPokemonSpecificsViewModel : ViewModel() {
         }
     }
 
-    private fun pokemonSpecificsServiceCall(id: Int): MutableLiveData<Pokemon> {
+    private fun pokemonSpecificsServiceCall(id: Int) {
         fragmentInterface.startProgressLoader()
-        val receivedData = MutableLiveData<Pokemon>()
         viewModelScope.launch(Dispatchers.IO) {
             pokeDexRepository.retrievePokemonSpecifics(id, object : PokeDexRepositoryI.PokemonCallback<Pokemon> {
                 override fun onSuccess(result: Pokemon) {
-                    fragmentInterface.stopProgressLoader()
-                    listOfPokemonSpecifics.add(result)
-                    fragmentInterface.specificPokemonIsAvailable(result)
+                        fragmentInterface.stopProgressLoader()
+                        listOfPokemonSpecifics.add(result)
+                        fragmentInterface.specificPokemonIsAvailable(result)
                 }
 
                 override fun onFailure() {
-                    fragmentInterface.stopProgressLoader()
-                    fragmentInterface.specificPokemonIsNotAvailable()
+                        fragmentInterface.stopProgressLoader()
+                        fragmentInterface.specificPokemonIsNotAvailable()
                 }
             })
         }
-        return receivedData
     }
 }

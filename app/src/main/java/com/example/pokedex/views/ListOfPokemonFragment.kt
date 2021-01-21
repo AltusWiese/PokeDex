@@ -47,7 +47,7 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsInt, Li
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         _binding = FragmentPokedexListOfPokemonBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -70,13 +70,15 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsInt, Li
     }
 
     private fun setupAdapter(listOfPokemon: ArrayList<FormattedPokemonModel>) {
-        val manager = LinearLayoutManager(context)
-        listOfPokemonAdapter = ListOfPokemonAdapter(this, listOfPokemon)
-        val recycler: RecyclerView = binding.pokedexListOfPokemonRecyclerview
-        recycler.layoutManager = manager
-        recycler.setHasFixedSize(true)
-        recycler.itemAnimator = DefaultItemAnimator()
-        recycler.adapter = listOfPokemonAdapter
+        if (isAdded) {
+            val manager = LinearLayoutManager(context)
+            listOfPokemonAdapter = ListOfPokemonAdapter(this, listOfPokemon)
+            val recycler: RecyclerView = binding.pokedexListOfPokemonRecyclerview
+            recycler.layoutManager = manager
+            recycler.setHasFixedSize(true)
+            recycler.itemAnimator = DefaultItemAnimator()
+            recycler.adapter = listOfPokemonAdapter
+        }
     }
 
     private fun displayErrorDialog() {
