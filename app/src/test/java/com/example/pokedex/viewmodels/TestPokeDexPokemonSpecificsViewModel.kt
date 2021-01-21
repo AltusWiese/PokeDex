@@ -76,7 +76,7 @@ class TestPokeDexPokemonSpecificsViewModel {
     }
 
     @Test
-    fun isPokemonListDataRetrieved() = testCoroutineRule.runBlockingTest {
+    fun isPokemonSpecificsDataRetrieved() = testCoroutineRule.runBlockingTest {
         Mockito.`when`(pokemonSpecificsViewModel.pokemonSpecificsServiceCall(1))
                 .thenAnswer {
                     (it.arguments[0] as PokeDexRepositoryI.PokemonCallback<Pokemon>)
