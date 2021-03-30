@@ -10,9 +10,11 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,9 +31,9 @@ import me.sargunvohra.lib.pokekotlin.model.PokemonAbility
 import me.sargunvohra.lib.pokekotlin.model.PokemonMove
 
 
-class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelInt {
+class PokemonSpecificsFragment : Fragment(), SpecificPokemonFragmentViewModelInt {
 
-    private val mSpecificPokemonViewModel: PokeDexPokemonSpecificsViewModel by activityViewModels()
+    private val mSpecificPokemonViewModel by viewModels<PokeDexPokemonSpecificsViewModel>()
     val args: PokemonSpecificsFragmentArgs by navArgs()
     private lateinit var callback: ChangeActivityHeader
     private lateinit var pokemonAbilitiesAdapter: PokemonAbilitiesAdapter
@@ -45,16 +47,7 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
         callback = context as ChangeActivityHeader
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callback.stopAnimation()
-    }
-
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentPokedexPokemonSpecificsBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -69,11 +62,27 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
 
         callback.setToolbar(args.pokemonName)
         callback.enableBack()
+//        attachObservers()
         notifyViewModelViewIsReady()
+        retrieveListOfPokemon()
     }
 
     private fun notifyViewModelViewIsReady() {
         mSpecificPokemonViewModel.viewIsReady(this, args.pokemonId)
+    }
+
+    private fun attachObservers() {
+        mSpecificPokemonViewModel.specificPokemonLiveData.observe(viewLifecycleOwner, {
+            stopProgressLoader()
+            specificPokemonIsAvailable(it)
+            callback.makeCoroutineToast()
+        })
+    }
+
+    private fun retrieveListOfPokemon() {
+        startProgressLoader()
+        mSpecificPokemonViewModel.pokemonSpecificsServiceCall(args.pokemonId)
+
     }
 
     private fun displayErrorDialog() {
@@ -81,7 +90,7 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
         builder.setCancelable(false)
         builder.setTitle(Html.fromHtml("<font color='#000000'>Oops!</font>"))
         builder.setMessage("Something went wrong.\nPlease try again.")
-        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> notifyViewModelViewIsReady() }
+//        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> notifyViewModelViewIsReady() }
         val alert = builder.create()
         alert.setCanceledOnTouchOutside(false)
         alert.show()
@@ -122,11 +131,11 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
     }
 
     private fun setImageResource(pokemonId: Int) {
-            val res: Resources = resources
-            val mDrawableName = "id$pokemonId"
-            val resID: Int = res.getIdentifier(mDrawableName, "drawable", requireActivity().packageName)
-            val drawable: Drawable = res.getDrawable(resID)
-            binding?.pokemonImage?.setImageDrawable(drawable)
+        val res: Resources = resources
+        val mDrawableName = "id$pokemonId"
+        val resID: Int = res.getIdentifier(mDrawableName, "drawable", requireActivity().packageName)
+        val drawable: Drawable = res.getDrawable(resID)
+        binding?.pokemonImage?.setImageDrawable(drawable)
     }
 
     override fun startProgressLoader() {
@@ -147,5 +156,13 @@ class PokemonSpecificsFragment : Fragment() , SpecificPokemonFragmentViewModelIn
     override fun specificPokemonIsNotAvailable() {
         callback.stopAnimation()
         displayErrorDialog()
+    }
+
+    override fun makeServiceToast() {
+        callback.makeServiceToast()
+    }
+
+    override fun makeCoroutineToast() {
+        callback.makeCoroutineToast()
     }
 }

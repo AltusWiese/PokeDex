@@ -2,8 +2,10 @@ package com.example.pokedex.views
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.airbnb.lottie.LottieAnimationView
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
 
         lottieAnimationView = binding.lottieLoader
         setupToolbar()
-        setupViewModel()
+//        setupViewModel()
         setupNavigation()
     }
 
@@ -48,13 +50,13 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
         supportActionBar?.setDisplayShowHomeEnabled(false)
     }
 
-    private fun setupViewModel() {
-        val pokeDexRepository: PokeDexRepositoryI = PokeDexRepository()
-        mListOfPokemonViewModel = ViewModelProvider(this).get(PokeDexListOfPokemonViewModel::class.java)
-        mSpecificPokemonViewModel = ViewModelProvider(this).get(PokeDexPokemonSpecificsViewModel::class.java)
-        mListOfPokemonViewModel.allocateRepo(pokeDexRepository)
-        mSpecificPokemonViewModel.allocateRepo(pokeDexRepository)
-    }
+//    private fun setupViewModel() {
+//        val pokeDexRepository: PokeDexRepositoryI = PokeDexRepository()
+//        mListOfPokemonViewModel = ViewModelProvider(this).get(PokeDexListOfPokemonViewModel::class.java)
+//        mSpecificPokemonViewModel = ViewModelProvider(this).get(PokeDexPokemonSpecificsViewModel::class.java)
+//        mListOfPokemonViewModel.allocateRepo(pokeDexRepository)
+//        mSpecificPokemonViewModel.allocateRepo(pokeDexRepository)
+//    }
 
     private fun setupNavigation() {
         val host = NavHostFragment.create(R.navigation.nav_graph)
@@ -92,5 +94,13 @@ class MainActivity : AppCompatActivity(), ChangeActivityHeader, BackgroundLottie
     override fun stopAnimation() {
         stopBackgroundAnimation(animationView, lottieAnimationView)
         binding.fadeBackground.visibility = View.GONE
+    }
+
+    override fun makeServiceToast() {
+        Toast.makeText(this, "SERVICE CALL COMPLETED", Toast.LENGTH_LONG).show()
+    }
+
+    override fun makeCoroutineToast() {
+        Toast.makeText(this, "COROUTINE COMPLETED", Toast.LENGTH_LONG).show()
     }
 }

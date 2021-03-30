@@ -12,39 +12,40 @@ import java.util.regex.Pattern
 
 class PokeDexListOfPokemonViewModel : ViewModel() {
 
-    lateinit var pokeDexRepository: PokeDexRepositoryI
-    var listOfPokemon: ArrayList<FormattedPokemonModel> = arrayListOf()
+    val pokeDexRepository: PokeDexRepositoryI = PokeDexRepository()
+    var listOfPokemon: ArrayList<FormattedPokemonModel>? = arrayListOf()
     lateinit var fragmentInterface: ListOfPokemonFragmentViewModelInt
-
-    fun allocateRepo(repository: PokeDexRepositoryI) {
-        pokeDexRepository = repository
-    }
+    var pokemonLiveData: MutableLiveData<ArrayList<FormattedPokemonModel>> = MutableLiveData()
 
     fun viewIsReady(fragmentInt: ListOfPokemonFragmentViewModelInt) {
 
         fragmentInterface = fragmentInt
-        if (listOfPokemon.isEmpty()) {
-            listOfPokemonServiceCall()
-        } else {
-            fragmentInterface.listOfPokemonIsAvailable(listOfPokemon)
-        }
+//        if (listOfPokemon.isEmpty()) {
+//            listOfPokemonServiceCall()
+//        } else {
+//            fragmentInterface.listOfPokemonIsAvailable(listOfPokemon)
+//        }
     }
+
+//    fun listOfPokemonServiceCall() {
+//        viewModelScope.launch {
+//            pokeDexRepository.retrieveListOfPokemon(pokemonLiveData)
+//        }
+//        listOfPokemon = pokemonLiveData.value
+//    }
 
     fun listOfPokemonServiceCall() {
         fragmentInterface.startProgressLoader()
-        viewModelScope.launch(Dispatchers.IO) {
-            pokeDexRepository.retrieveListOfPokemon(object : PokemonCallback<NamedApiResourceList> {
-                override fun onSuccess(result: NamedApiResourceList) {
-                        fragmentInterface.stopProgressLoader()
-                        fragmentInterface.listOfPokemonIsAvailable(formatList(result))
-                }
-
-                override fun onFailure() {
-                        fragmentInterface.stopProgressLoader()
-                        fragmentInterface.listOfPokemonIsNotAvailable()
-                }
-            })
-        }
+        pokeDexRepository.retrieveListOfPokemon(object : PokemonCallback<NamedApiResourceList> {
+            override fun onSuccess(result: NamedApiResourceList) {
+                fragmentInterface.stopProgressLoader()
+                fragmentInterface.listOfPokemonIsAvailable(formatList(result))
+            }
+            override fun onFailure() {
+                fragmentInterface.stopProgressLoader()
+                fragmentInterface.listOfPokemonIsNotAvailable()
+            }
+        })
     }
 
     fun formatList(listOfPokemon: NamedApiResourceList?): ArrayList<FormattedPokemonModel> {
@@ -63,7 +64,6 @@ class PokeDexListOfPokemonViewModel : ViewModel() {
                 }
             }
         }
-        this.listOfPokemon = formattedListOfPokemon
         return formattedListOfPokemon
     }
 }

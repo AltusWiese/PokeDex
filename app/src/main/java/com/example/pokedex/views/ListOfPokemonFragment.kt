@@ -8,9 +8,11 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +28,7 @@ import com.example.pokedex.views.utils.ChangeActivityHeader
 
 class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsInt, ListOfPokemonFragmentViewModelInt {
 
-    private val mListOfPokemonViewModel: PokeDexListOfPokemonViewModel by activityViewModels()
+    private val mListOfPokemonViewModel by viewModels<PokeDexListOfPokemonViewModel>()
     private lateinit var callback: ChangeActivityHeader
     private lateinit var listOfPokemonAdapter: ListOfPokemonAdapter
 
@@ -38,16 +40,7 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsInt, Li
         callback = context as ChangeActivityHeader
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        callback.stopAnimation()
-    }
-
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPokedexListOfPokemonBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -62,11 +55,24 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsInt, Li
 
         callback.setToolbar("List of Pokemon")
         callback.disableBack()
+//        attachObservers()
         notifyViewModelViewIsReady()
+        retrieveListOfPokemon()
     }
 
     private fun notifyViewModelViewIsReady() {
         mListOfPokemonViewModel.viewIsReady(this)
+    }
+
+    private fun attachObservers() {
+        mListOfPokemonViewModel.pokemonLiveData.observe(viewLifecycleOwner, {
+            listOfPokemonIsAvailable(it)
+        })
+    }
+
+    private fun retrieveListOfPokemon() {
+        startProgressLoader()
+        mListOfPokemonViewModel.listOfPokemonServiceCall()
     }
 
     private fun setupAdapter(listOfPokemon: ArrayList<FormattedPokemonModel>) {
@@ -86,7 +92,8 @@ class ListOfPokemonFragment : Fragment(), ListOfPokemonToPokemonSpecificsInt, Li
         builder.setCancelable(false)
         builder.setTitle(Html.fromHtml("<font color='#000000'>Oops!</font>"))
         builder.setMessage("Something went wrong.\nPlease try again.")
-        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> notifyViewModelViewIsReady() }
+//        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> notifyViewModelViewIsReady() }
+        builder.setPositiveButton("OK") { _: DialogInterface?, _: Int -> retrieveListOfPokemon() }
         val alert = builder.create()
         alert.setCanceledOnTouchOutside(false)
         alert.show()

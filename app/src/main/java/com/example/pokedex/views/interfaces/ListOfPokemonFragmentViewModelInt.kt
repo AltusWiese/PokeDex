@@ -12,4 +12,5 @@ interface ListOfPokemonFragmentViewModelInt {
     fun listOfPokemonIsAvailable(listOfPokemon: ArrayList<FormattedPokemonModel>)
 
     fun listOfPokemonIsNotAvailable()
+
 }

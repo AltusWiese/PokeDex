@@ -12,4 +12,8 @@ interface SpecificPokemonFragmentViewModelInt {
     fun specificPokemonIsAvailable(pokemon : Pokemon)
 
     fun specificPokemonIsNotAvailable()
+
+    fun makeServiceToast()
+
+    fun makeCoroutineToast()
 }

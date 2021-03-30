@@ -11,4 +11,8 @@ interface ChangeActivityHeader {
     fun startAnimation()
 
     fun stopAnimation()
+
+    fun makeServiceToast()
+
+    fun makeCoroutineToast()
 }
